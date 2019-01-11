@@ -1,13 +1,21 @@
 import React from 'react'
-import { View, ViewPagerAndroid, StyleSheet, Image, Animated, TouchableWithoutFeedback, BackHandler } from 'react-native'
+import { View, StyleSheet, Image, Animated, TouchableWithoutFeedback, BackHandler } from 'react-native'
 
 import TabView from './TabView'
 
+import { ViewPager } from 'rn-viewpager'
+import { StackActions, NavigationActions } from 'react-navigation'
+
+import { hideMessage } from 'react-native-flash-message'
+
 import Grades from './Grades'
-import Chat from './Chat'
 import Settings from './Settings'
 
 import CONSTANTS from '../constants'
+
+import FlashMessage from "react-native-flash-message";
+
+import API from '@team-llambda/gradebook-api'
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -73,18 +81,27 @@ export default class Main extends React.Component {
 
   componentWillUnmount() {
     this.backHandler.remove();
+    hideMessage()
+  }
+
+  logout = () => {
+    API.logout().then(() => {
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: 'Login' })],
+      });
+      this.props.navigation.dispatch(resetAction);
+    })
   }
 
   render() {
     const tabStyle = {
-      flex: this._animatedIsFocused.interpolate({
+      height: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: [1, 0],
+        outputRange: [40, 0]
       }),
       overflow: 'hidden'
     }
-
-    if (tabStyle.flex)
 
     return (
       <View style={styles.container}>
@@ -100,24 +117,24 @@ export default class Main extends React.Component {
               onPressTab={this.onPressTab}
             />
           </Animated.View>
-          <ViewPagerAndroid
+          <ViewPager
             style={styles.viewPager}
-            initialPage={this.state.currentPage}
-            onPageSelected={(e) => this.setState({currentPage: e.nativeEvent.position})}
+            initialPage={0}
+            onPageSelected={(e) => {
+              this.setState({currentPage: e.position})}
+            }
             ref={(viewPager) => {this.viewPager = viewPager}}
             scrollEnabled={this.state.currentClass === -1}
           >
             <View style={styles.pageContainer}>
-              <Grades onPressClass={this.onPressClass} currentClass={this.state.currentClass}/>
+              <Grades onPressClass={this.onPressClass} currentClass={this.state.currentClass} logout={this.logout}/>
             </View>
             <View style={styles.pageContainer}>
-              <Chat/>
+              <Settings logout={this.logout}/>
             </View>
-            <View style={styles.pageContainer}>
-              <Settings/>
-            </View>
-          </ViewPagerAndroid>
+          </ViewPager>
         </View>
+        <FlashMessage position="top" />
       </View>
     )
   }

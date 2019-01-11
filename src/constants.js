@@ -1,5 +1,9 @@
 module.exports = {
   backgroundColor: '#FFF',
-  tabs: ['Grades', 'Chat', 'Settings'],
-  classtabs: ['Assignments', 'Categories']
+  tabs: ['Grades', 'Settings'],
+  defaultStorageValues: {
+    gradeCardColor: '#611700',
+    recentColors: [],
+    rememberCredentials: true
+  }
 }

@@ -21,8 +21,15 @@ const gradeToLetterConverter = grade => {
   }
 }
 
+const parseGrade = (grade: string) => {
+  if (grade.charAt(grade.length-1) === '%') {
+    return Number(grade.substring(0, grade.length-1)).toFixed(2)
+  }
+  return Number(grade).toFixed(2)
+}
+
 const isAssignmentValid = assignment => {
-  if (isNaN(assignment.pointsEarned) && isNaN(assignment.pointsTotal)) {
+  if (isNaN(assignment.pointsEarned) || isNaN(assignment.pointsTotal)) {
     return false;
   }
   if (assignment.pointsEarned === 0 && assignment.pointsTotal === 0) {
@@ -36,5 +43,6 @@ const isAssignmentValid = assignment => {
 
 export {
   gradeToLetterConverter,
-  isAssignmentValid
+  isAssignmentValid,
+  parseGrade
 }

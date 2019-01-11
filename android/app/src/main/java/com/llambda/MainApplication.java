@@ -1,10 +1,11 @@
-package com.mobile;
+package com.llambda;
 
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
+import com.oblador.keychain.KeychainPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -25,8 +26,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNGestureHandlerPackage(),
-            new SplashScreenReactPackage()
+            new RNCWebViewPackage(),
+            new KeychainPackage(),
+            new RNGestureHandlerPackage()
       );
     }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native'
+import { StyleSheet, TouchableOpacity, Text, ActivityIndicator, Platform } from 'react-native'
 
 export default class Buttom extends React.Component {
   render() {
@@ -29,6 +29,6 @@ const styles = StyleSheet.create({
   text: {
     color: '#FFF',
     fontSize: 18,
-    fontFamily: 'sofia pro regular'
+    fontFamily: Platform.OS === 'ios' ? 'SofiaProRegular' : 'SofiaProRegular'
   }
 })

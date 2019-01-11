@@ -1,6 +1,4 @@
-package com.mobile;
-
-import android.os.Bundle;
+package com.llambda;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

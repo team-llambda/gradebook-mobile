@@ -1,16 +1,20 @@
 import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 
 const circleradius = 8
 
-export default class AssignmentItem extends React.Component {
+export default class AssignmentItem extends React.PureComponent {
     constructor(props) {
         super(props)
     }
 
+    _onPress = () => {
+        this.props.openAssignmentModal(this.props.index);
+    }
+
     render() {
         return (
-            <View>
+            <TouchableOpacity onPress={this._onPress}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1}}>
                     <View style={{flexDirection: 'row', alignItems: 'center', flex: 6}}>
                         <View style={styles.circle}/>
@@ -29,11 +33,11 @@ export default class AssignmentItem extends React.Component {
                             {this.props.item.category}
                         </Text>
                     </View>
-                    <Text style={styles.gradeChangeText}>
-                        +0.3
+                    <Text style={[styles.gradeChangeText, {color: this.props.gradeChange >= 0 ? 'rgba(1, 203, 130, 0.46)' : 'rgba(203, 1, 1, 0.46)'}]}>
+                        {this.props.gradeChange && ((this.props.gradeChange >= 0 ? '+' : '') + this.props.gradeChange)}
                     </Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -56,25 +60,24 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0)',
     },
     assignmentText: {
-        fontFamily: 'sofia pro regular',
+        fontFamily: 'SofiaProRegular',
         fontSize: 18,
         marginLeft: 10
     },
     categoryText: {
-        fontFamily: 'sofia pro regular',
+        fontFamily: 'SofiaProRegular',
         fontSize: 14,
         marginLeft: 10,
         color: "#CCCCCC"
     },
     gradeText: {
-        fontFamily: 'sofia pro regular',
+        fontFamily: 'SofiaProRegular',
         fontSize: 20,
         flex: 1,
         textAlign: 'right'
     },
     gradeChangeText: {
-        fontFamily: 'sofia pro regular',
+        fontFamily: 'SofiaProRegular',
         fontSize: 14,
-        color: 'rgba(1, 203, 130, 0.46)'
     }
 })

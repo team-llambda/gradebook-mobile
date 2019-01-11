@@ -1,12 +1,29 @@
 import React from 'react'
 import { View, Image, StyleSheet, Dimensions } from 'react-native'
 
+import { StackActions, NavigationActions } from 'react-navigation'
+
+import API from '@team-llambda/gradebook-api'
+
 export default class Splash extends React.Component {
     componentDidMount() {
-        setTimeout(() => {
-            this.props.navigation.navigate('Login')
-        }, 1000)
+        API.isAuthenticated().then((response) => {
+            if (response.ok) {
+                this.navigate('Main')
+            } else {
+                this.navigate('Login')
+            }
+        })
     }
+
+    navigate(route) {
+        const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: route })],
+        });
+        this.props.navigation.dispatch(resetAction);
+    }
+
     render() {
         return (
             <View>

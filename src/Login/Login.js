@@ -1,7 +1,12 @@
 import React from 'react'
-import { StyleSheet, View,  Image, Text } from 'react-native'
+import { StyleSheet, View,  Image } from 'react-native'
+
+import { StackActions, NavigationActions } from 'react-navigation'
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 import { widthPercentageToDP, heightPercentageToDP } from '../scaling'
+import { getData } from '../utils/storage'
+import { setCredentials, getCredentials } from '../utils/keychain'
 
 import InputField from '../Components/InputField'
 import Button from '../Components/Button'
@@ -20,13 +25,15 @@ export default class Login extends React.Component {
       email: '',
       password: '',
       loading: false,
-      errormsg: ''
     }
   }
 
   componentDidMount(){
-    //TODO: auto input credentials
-    
+    getCredentials().then((credentials) => {
+      if (credentials) {
+        this.setState({email: credentials.username, password: credentials.password})
+      }
+    })
   }
 
   handleLogin = () => {
@@ -37,25 +44,40 @@ export default class Login extends React.Component {
     .then((response) => {
       if (!response.ok) {
         //catch error
-        this.displayErrorMessage('incorrect credentials')
+        showMessage({
+          message: "Incorrect Credentials",
+          type: "danger",
+          floating: true
+        });
+        this.setState({loading: false})
       } else {
         //logging in
+        this.setState({loading: false})
         this.login();
       }
     })
     .catch((error) => {
       //something went wrong, ex. network error
-      this.displayErrorMessage('something went wrong')
+      this.setState({loading: false})
+      showMessage({
+        message: "Something Went Wrong",
+        type: "warning",
+        floating: true
+      });
     });
   }
 
   login = () => {
-    this.props.navigation.navigate('Main')
-  }
-
-  displayErrorMessage = (message) => {
-    //handle problems signing in (ex. incorrect credentials/network errors)
-    this.setState({errormsg: message, loading: false})
+    getData('rememberCredentials').then((val) => {
+      if (val) {
+        setCredentials(this.state.email, this.state.password)
+      }
+    })
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Main' })],
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   render() {
@@ -74,12 +96,7 @@ export default class Login extends React.Component {
           secureTextEntry={true}
         />
         <Button style={styles.loginButton} text="login" onPress={this.handleLogin} loading={this.state.loading}/>
-        {
-          this.state.errormsg !== '' &&
-          <Text style={styles.errorMsgText}>
-            {this.state.errormsg}
-          </Text>
-        }
+        <FlashMessage position="top" />
       </View>
     )
   }
@@ -113,9 +130,4 @@ const styles = StyleSheet.create({
     borderRadius: widthPercentageToDP(40)/5,
     elevation: 5
   },
-  errorMsgText: {
-    position: 'absolute',
-    bottom: 5,
-    color: 'red'
-  }
 })

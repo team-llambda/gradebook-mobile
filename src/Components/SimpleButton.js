@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, Platform } from 'react-native'
 
 import { widthPercentageToDP, heightPercentageToDP } from '../scaling'
 
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#FFF',
         fontSize: 18,
-        fontFamily: 'sofia pro regular',
+        fontFamily: Platform.OS === 'ios' ? 'SofiaProRegular' : 'SofiaProRegular',
         padding: 20
     }
 })

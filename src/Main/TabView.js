@@ -22,12 +22,11 @@ export default class TabView extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
   tabText: {
-    fontFamily: 'sofia pro regular',
+    fontFamily: 'SofiaProRegular',
     fontSize: 20
   }
 })

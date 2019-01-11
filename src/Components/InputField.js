@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, TextInput, Text, Animated, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, View, TextInput, Platform, Animated, TouchableWithoutFeedback } from 'react-native'
 
 import CONSTANTS from '../constants'
 
@@ -35,6 +35,8 @@ export default class InputField extends React.Component {
   render() {
     const paddingTop = 5 //make space for floating text input
     const borderColor = this.state.focused ? '#527AFF' : '#BDBDBD'
+
+    var topOffset = Platform.OS === 'ios' ? 0 : -5
     const labelStyle = {
       position: 'absolute',
       left: this._animatedIsFocused.interpolate({
@@ -43,7 +45,7 @@ export default class InputField extends React.Component {
       }),
       top: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: [this.props.height/2 - paddingTop, -5],
+        outputRange: [this.props.height/2 - paddingTop + topOffset, topOffset],
       }),
       fontSize: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
@@ -55,7 +57,7 @@ export default class InputField extends React.Component {
       }),
       backgroundColor: CONSTANTS.backgroundColor,
       zIndex: 1,
-      fontFamily: 'sofia pro regular'
+      fontFamily: 'SofiaProRegular'
     };
     return (
       <View style={[{paddingTop: paddingTop}, this.props.outerStyle]}>
@@ -94,6 +96,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     paddingTop: 0,
     paddingBottom: 0,
-    fontFamily: 'sofia pro regular',
+    fontFamily: 'SofiaProRegular',
   }
 })
