@@ -56,7 +56,7 @@ export default class Settings extends React.Component {
 
   _helpfaq = () => {
     showMessage({
-      message: "Ask Nathan Yan, Andrew Liu, or Terrance Li in the hallways or Contact Us!",
+      message: "Ask Nathan Yan, Andrew Liu, Alan Chu, or Terrance Li in the hallways or Contact Us!",
       type: "success",
       floating: true
     });
