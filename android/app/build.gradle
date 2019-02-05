@@ -101,8 +101,8 @@ android {
         applicationId "com.llambda"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "Beta"
+        versionCode 2
+        versionName "Beta2.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
