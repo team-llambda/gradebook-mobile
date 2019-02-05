@@ -13,7 +13,7 @@ import Button from '../Components/Button'
 
 import CONSTANTS from '../constants'
 
-import API from '@team-llambda/gradebook-api'
+import GradeBook from '../utils/gradebook'
 
 const inputFieldHeight = heightPercentageToDP(6.5) //height of input fields and button
 
@@ -40,31 +40,20 @@ export default class Login extends React.Component {
     this.setState({
       loading: true
     })
-    API.login(this.state.email, this.state.password)
-    .then((response) => {
-      if (!response.ok) {
-        //catch error
-        showMessage({
-          message: "Incorrect Credentials",
-          type: "danger",
-          floating: true
-        });
-        this.setState({loading: false})
-      } else {
-        //logging in
-        this.setState({loading: false})
-        this.login();
-      }
-    })
-    .catch((error) => {
-      //something went wrong, ex. network error
+    GradeBook.initiate(this.state.email, this.state.password);
+
+    GradeBook.getGradebook().then(() => {
       this.setState({loading: false})
+      this.login();
+    }).catch(error => {
+      //catch error
       showMessage({
-        message: "Something Went Wrong",
-        type: "warning",
+        message: "Incorrect Credentials",
+        type: "danger",
         floating: true
       });
-    });
+      this.setState({loading: false})
+    })
   }
 
   login = () => {

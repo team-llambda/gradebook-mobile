@@ -15,7 +15,7 @@ import CONSTANTS from '../constants'
 
 import FlashMessage from "react-native-flash-message";
 
-import API from '@team-llambda/gradebook-api'
+import { deleteCredentials } from '../utils/keychain'
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -85,12 +85,20 @@ export default class Main extends React.Component {
   }
 
   logout = () => {
-    API.logout().then(() => {
-      const resetAction = StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: 'Login' })],
+    deleteCredentials().then(() => {
+      showMessage({
+        message: "Logging out...",
+        type: "success",
+        floating: true
       });
-      this.props.navigation.dispatch(resetAction);
+
+      setTimeout(() => {
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: 'Login' })],
+        });
+        this.props.navigation.dispatch(resetAction);
+      }, 2000)
     })
   }
 

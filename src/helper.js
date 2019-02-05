@@ -44,5 +44,5 @@ const isAssignmentValid = assignment => {
 export {
   gradeToLetterConverter,
   isAssignmentValid,
-  parseGrade
+  parseGrade,
 }

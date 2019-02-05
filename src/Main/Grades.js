@@ -5,13 +5,11 @@ import { showMessage } from "react-native-flash-message";
 
 import ClassView from './ClassView'
 
-import { gradeToLetterConverter } from '../helper'
 import { getData } from '../utils/storage'
-import { parseGrade } from '../helper'
 
 import tinycolor from 'tinycolor2';
 
-import API from '@team-llambda/gradebook-api'
+import GradeBook from '../utils/gradebook'
 
 const cardHeight = 150
 const cardMarginBottom = 30
@@ -22,36 +20,9 @@ export default class Grades extends React.Component {
     super(props)
 
     this.state = {
-      gradeData: [
-        // {
-        //   "teacher": "George Washington",
-        //   "class": "AP Calc AB",
-        //   "grade": 74.2,
-        //   "period": "2",
-        //   "room": "31414"
-        // },
-        // {
-        //   "teacher": "Benjamin Franklin",
-        //   "class": "AP Language Arts",
-        //   "grade": 81.4,
-        //   "period": "3",
-        //   "room": "31414"
-        // },
-        // {
-        //   "teacher": "Benjamin Franklin",
-        //   "class": "AP Language Arts",
-        //   "grade": 81.4,
-        //   "period": "3",
-        //   "room": "31414"
-        // },
-        // {
-        //   "teacher": "Benjamin Franklin",
-        //   "class": "AP Language Arts",
-        //   "grade": 81.4,
-        //   "period": "3",
-        //   "room": "31414"
-        // }
-      ],
+      gradeData: {
+        courses: []
+      },
       gradeCardColor: ''
     }
 
@@ -59,29 +30,29 @@ export default class Grades extends React.Component {
   }
 
   componentDidMount() {
-    Promise.all([API.getClasses(), getData('gradeCardColor')]).then((values) => {
-      let response = values[0]
+    Promise.all([GradeBook.getGradebook(1), getData('gradeCardColor')]).then((values) => {
+      let gradeBook = values[0]
       let gradeCardColor = values[1]
       this.setState({gradeCardColor})
-      return response.json()
+      this.setState({gradeData: gradeBook})
     })
-    .then((responseJson) => {
-      //parse classes data
-      let classes = responseJson.data
-      classes = classes.map(c => {
-        var newClass = {
-          class: c.class_name,
-          grade: parseGrade(c.grade),
-          room: c.room.substring(6),
-          code: c.code,
-          teacher: c.teacher,
-          period: c.period,
-        };
-        return newClass;
-      })
+    // .then((responseJson) => {
+    //   //parse classes data
+    //   let classes = responseJson.data
+    //   classes = classes.map(c => {
+    //     var newClass = {
+    //       class: c.class_name,
+    //       grade: parseGrade(c.grade),
+    //       room: c.room.substring(6),
+    //       code: c.code,
+    //       teacher: c.teacher,
+    //       period: c.period,
+    //     };
+    //     return newClass;
+    //   })
 
-      this.setState({gradeData: classes})
-    })
+    //   this.setState({gradeData: classes})
+    // })
     .catch((error) => {
       showMessage({
         message: "Something Went Wrong :(",
@@ -117,6 +88,12 @@ export default class Grades extends React.Component {
     }).start()
   }
 
+  refresh = () => {
+    GradeBook.getGradebook(1).then((gradebook) => {
+      this.setState({gradeData: gradebook})
+    })
+  }
+
   render() {
     const classViewStyle = {
       flex: this.animationValue.interpolate({
@@ -128,18 +105,21 @@ export default class Grades extends React.Component {
     return(
       <View style={{flex: 1}}>
         <ScrollView>
-          {this.state.gradeData.map((item, index) => {
+          {this.state.gradeData.courses.map((item, index) => {
             return (
-              <GradeCard data={item} onPress={this.props.onPressClass} index={item.period} key={index}
-                selected={this.props.currentClass === -1 || this.props.currentClass === item.period}
+              <GradeCard data={item} onPress={this.props.onPressClass} index={index} key={index}
+                selected={this.props.currentClass === -1 || this.props.currentClass === index}
                 gradeCardColor={this.state.gradeCardColor}
               />
             )
           })}
         </ScrollView>
         <Animated.View style={classViewStyle}>
-          <ClassView currentClass={this.props.currentClass}/>
-        </Animated.View>
+          {
+            this.props.currentClass !== -1 &&
+            <ClassView data={this.state.gradeData.courses[this.props.currentClass].marks[0]} currentClass={this.props.currentClass} refresh={this.refresh}/>
+          }
+          </Animated.View>
       </View>
     )
   }
@@ -215,7 +195,7 @@ class GradeCard extends React.Component {
           <View style={[styles.cardView, {backgroundColor: this.props.gradeCardColor}]}>
             <View style={{flex: 4, flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={{color: overlayTextColor, fontFamily: 'SofiaProRegular', fontSize: 25}} numberOfLines={1}>
-                {this.props.data.class}
+                {this.props.data.title}
               </Text>
               <Text style={{color: overlayTextColor, fontFamily: 'SofiaProRegular', fontSize: 25}}>
                 {this.props.data.room}
@@ -223,12 +203,12 @@ class GradeCard extends React.Component {
             </View>
             <View style={{flex: 3,}}>
               <Text style={{color: overlayTextColor, fontFamily: 'SofiaProRegular', fontSize: 13}}>
-                {this.props.data.teacher}
+                {this.props.data.staff}
               </Text>
             </View>
             <View style={{flex: 6,}}>
               <Text style={{color: overlayTextColor, fontFamily: 'SofiaProRegular', fontSize: 40}}>
-                {`${this.props.data.grade}   ${gradeToLetterConverter(this.props.data.grade)}`}
+                {`${this.props.data.marks[0].calculatedScoreRaw}   ${this.props.data.marks[0].calculatedScoreString}`}
               </Text>
             </View>
           </View>

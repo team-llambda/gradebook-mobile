@@ -8,7 +8,9 @@
     "clear-cache": "watchman watch-del-all && rm -rf $TMPDIR/react-* && rm -rf node_modules/ && npm cache verify && npm install && npm start -- --reset-cache"
   },
   "dependencies": {
+    "@team-llambda/edupoint-pxpwebservices-synergy": "^0.3.0",
     "@team-llambda/gradebook-api": "^1.0.3",
+    "lodash.clonedeep": "^4.5.0",
     "react": "16.6.3",
     "react-native": "0.57.8",
     "react-native-color": "0.0.10",

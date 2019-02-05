@@ -3,13 +3,20 @@ import { View, Image, StyleSheet, Dimensions } from 'react-native'
 
 import { StackActions, NavigationActions } from 'react-navigation'
 
-import API from '@team-llambda/gradebook-api'
+import { getCredentials } from '../utils/keychain'
+import GradeBook from '../utils/gradebook'
 
 export default class Splash extends React.Component {
     componentDidMount() {
-        API.isAuthenticated().then((response) => {
-            if (response.ok) {
-                this.navigate('Main')
+        getCredentials().then((credentials) => {
+            if (credentials) {
+                GradeBook.initiate(credentials.username, credentials.password);
+
+                GradeBook.getGradebook().then(() => {
+                    this.navigate('Main')
+                }).catch(error => {
+                    this.navigate('Login')
+                })
             } else {
                 this.navigate('Login')
             }

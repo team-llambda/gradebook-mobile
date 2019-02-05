@@ -8,9 +8,9 @@ export default class ModalView extends React.Component {
         super(props)
 
         this.state = {
-            categorySelected: this.props.assignment.category, //TODO: handle cannot find assignment category??
-            pointsEarned: this.props.assignment.pointsEarned.toString(),
-            pointsTotal: this.props.assignment.pointsTotal.toString()
+            categorySelected: this.props.assignment.type, //TODO: handle cannot find assignment category??
+            pointsEarned: this.props.assignment.actualScore ? this.props.assignment.actualScore.toString() : '',
+            pointsTotal: this.props.assignment.assignedScore ? this.props.assignment.assignedScore.toString() : ''
         }
     }
     
@@ -19,6 +19,7 @@ export default class ModalView extends React.Component {
         updatedAssignmnet.category = this.state.categorySelected
         updatedAssignmnet.pointsEarned = Number(this.state.pointsEarned)
         updatedAssignmnet.pointsTotal = Number(this.state.pointsTotal)
+        updatedAssignmnet.measure = this.props.assignment.measure
         this.props.closeModal(0, updatedAssignmnet)
     }
 
@@ -66,6 +67,20 @@ export default class ModalView extends React.Component {
             }
         }
 
+        var buttonOptions = [
+            {text: 'Update', function: this.onSelectUpdateAssignment}, 
+            {text: 'Delete', function: this.onSelectDeleteAssignment},
+            {text: 'Cancel', function: this.onSelectCancel}
+        ]
+
+        if (assignment.type === undefined) {
+            //we are making new assignment
+            buttonOptions = [
+                {text: 'Create', function: this.onSelectUpdateAssignment}, 
+                {text: 'Cancel', function: this.onSelectCancel}
+            ]
+        }
+
         return (
             <View style={styles.modalContainer}>
                 <Text style={{fontFamily: 'SofiaProRegular',}}>Assignment Details</Text>
@@ -76,7 +91,7 @@ export default class ModalView extends React.Component {
                     sections={[
                         {title: 'Account Options', 
                         data: [
-                            {text: 'Name', details: assignment.name, type: 'text'}, 
+                            {text: 'Name', details: assignment.measure, type: 'text'}, 
                             {text: 'Category', options: this.props.categories, onSelect: this.onSelectModalDropdown, 
                                 initialValue: this.state.categorySelected,
                                 type: 'modaldropdown'
@@ -94,11 +109,7 @@ export default class ModalView extends React.Component {
                     ItemSeparatorComponent={renderSeparator}
                     sections={[
                         {title: 'Account Options', 
-                        data: [
-                            {text: 'Update', function: this.onSelectUpdateAssignment}, 
-                            {text: 'Delete', function: this.onSelectDeleteAssignment},
-                            {text: 'Cancel', function: this.onSelectCancel}
-                        ], renderItem: buttonRenderItem}
+                        data: buttonOptions, renderItem: buttonRenderItem}
                     ]}
                 />
             </View>

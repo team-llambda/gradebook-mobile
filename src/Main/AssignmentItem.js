@@ -19,7 +19,7 @@ export default class AssignmentItem extends React.PureComponent {
                     <View style={{flexDirection: 'row', alignItems: 'center', flex: 6}}>
                         <View style={styles.circle}/>
                         <Text style={styles.assignmentText}>
-                            {this.props.item.name}
+                            {this.props.item.measure}
                         </Text>
                     </View>
                     <Text style={styles.gradeText}>
@@ -30,7 +30,7 @@ export default class AssignmentItem extends React.PureComponent {
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <View style={styles.dummycircle}/>
                         <Text style={styles.categoryText}>
-                            {this.props.item.category}
+                            {this.props.item.type}
                         </Text>
                     </View>
                     <Text style={[styles.gradeChangeText, {color: this.props.gradeChange >= 0 ? 'rgba(1, 203, 130, 0.46)' : 'rgba(203, 1, 1, 0.46)'}]}>
@@ -42,7 +42,7 @@ export default class AssignmentItem extends React.PureComponent {
     }
 
     calculateGrade() {
-        return (this.props.item.pointsEarned/this.props.item.pointsTotal).toFixed(2)
+        return (this.props.item.actualScore/this.props.item.assignedScore).toFixed(2)
     }
 }
 

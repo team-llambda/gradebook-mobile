@@ -2,7 +2,6 @@ import React from 'react'
 import { StyleSheet, View, Text, SectionList, Modal, TouchableWithoutFeedback } from 'react-native'
 
 import { getData, storeData } from '../utils/storage'
-import { deleteCredentials } from '../utils/keychain'
 import { ButtonCell, ColorPickerCell, SwitchCell, renderSeparator } from '../Components/SectionListCells'
 import WebView from './WebView'
 
@@ -41,17 +40,7 @@ export default class Settings extends React.Component {
   }
 
   _logout = () => {
-    deleteCredentials().then(() => this.props.logout());
-  }
-
-  _deletecredentials() {
-    deleteCredentials().then(() => {
-      showMessage({
-        message: "Deleted Credentials",
-        type: "success",
-        floating: true
-      });
-    })
+    this.props.logout();
   }
 
   _helpfaq = () => {
@@ -130,7 +119,6 @@ export default class Settings extends React.Component {
           sections={[
             {title: 'Account Options', 
             data: [
-              {text: 'Delete Credentials', function: this._deletecredentials}, 
               {text: 'Log Out', function: this._logout}
             ], renderItem: buttonRenderItem}
           ]}
