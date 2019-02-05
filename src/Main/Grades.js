@@ -30,7 +30,7 @@ export default class Grades extends React.Component {
   }
 
   componentDidMount() {
-    Promise.all([GradeBook.getGradebook(1), getData('gradeCardColor')]).then((values) => {
+    Promise.all([GradeBook.getGradebook(), getData('gradeCardColor')]).then((values) => {
       let gradeBook = values[0]
       let gradeCardColor = values[1]
       this.setState({gradeCardColor})
@@ -89,7 +89,7 @@ export default class Grades extends React.Component {
   }
 
   refresh = () => {
-    GradeBook.getGradebook(1).then((gradebook) => {
+    GradeBook.getGradebook().then((gradebook) => {
       this.setState({gradeData: gradebook})
     })
   }
