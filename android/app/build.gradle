@@ -101,7 +101,7 @@ android {
         applicationId "com.llambda"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 3
         versionName "Beta"
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -150,6 +150,8 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-background-fetch')
+    compile project(':react-native-push-notification')
     compile project(':react-native-webview')
     compile project(':react-native-keychain')
     compile project(':react-native-gesture-handler')

@@ -4,6 +4,8 @@ module.exports = {
   defaultStorageValues: {
     gradeCardColor: '#611700',
     recentColors: [],
-    rememberCredentials: true
-  }
+    rememberCredentials: true,
+    notifications: true
+  },
+  baseUrl: 'https://wa-bsd405-psv.edupoint.com/'
 }

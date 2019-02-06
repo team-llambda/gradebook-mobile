@@ -17,6 +17,8 @@ import FlashMessage from "react-native-flash-message";
 
 import { deleteCredentials } from '../utils/keychain'
 
+import PushNotifController from '../utils/PushNotifController'
+
 export default class Main extends React.Component {
   constructor(props) {
     super(props)
@@ -113,6 +115,7 @@ export default class Main extends React.Component {
 
     return (
       <View style={styles.container}>
+        <PushNotifController/>
         <TouchableWithoutFeedback onPress={this.onPressLogo}>
           <View style={styles.logoView}>
             <Image source={require('../../assets/logo.png')} style={styles.logo}/>

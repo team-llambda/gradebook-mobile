@@ -19,6 +19,7 @@ export default class Settings extends React.Component {
       recentColors: [],
       gradeCardColor: "#611700",
       rememberCredentials: true,
+      notifications: true,
       modalIsOpen: false
     }
   }
@@ -32,6 +33,9 @@ export default class Settings extends React.Component {
     })
     getData('rememberCredentials').then((rememberCredentials) => {
       this.setState({rememberCredentials})
+    })
+    getData('notifications').then((notifications) => {
+      this.setState({notifications})
     })
   }
 
@@ -106,6 +110,7 @@ export default class Settings extends React.Component {
           ItemSeparatorComponent={renderSeparator}
           sections={[
             {title: 'General', data: [
+              {text: 'Notifications', key: 'notifications', type: 'switch'},
               {text: 'Color', type: 'color'},
               {text: 'Remember Credentials', key: 'rememberCredentials', type: 'switch'}
             ], renderItem: generalSectionRender},

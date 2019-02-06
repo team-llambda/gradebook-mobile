@@ -11,25 +11,70 @@ import tinycolor from 'tinycolor2';
 
 import GradeBook from '../utils/gradebook'
 
+import BackgroundFetch from "react-native-background-fetch";
+
+import { notificationEvent } from '../utils/notifications'
+
 const cardHeight = 150
 const cardMarginBottom = 30
 const cardPadding = 20
+
+// Register your BackgroundFetch HeadlessTask
+BackgroundFetch.registerHeadlessTask(notificationEvent);
 
 export default class Grades extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
+      queue: null,
       gradeData: {
         courses: []
       },
       gradeCardColor: ''
     }
 
+    // queueFactory()
+    //   .then(queue => {
+    //     this.setState({queue});
+    //   });
+
     this.animationValue = new Animated.Value(0)
   }
 
+  createBackgroundJobs = () => {
+    for (var i = 0; i < 5; i++) {
+      this.state.queue.createJob('gradebook-changes', {}, {attempts: 10, timeout: 25000}, false)
+    }
+  }
+
   componentDidMount() {
+    BackgroundFetch.configure({
+      minimumFetchInterval: 15,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      enableHeadless: true
+    }, notificationEvent, (error) => {
+        console.log("[js] RNBackgroundFetch failed to start");
+    });
+
+    // Optional: Query the authorization status.
+    BackgroundFetch.status((status) => {
+      switch(status) {
+        case BackgroundFetch.STATUS_RESTRICTED:
+          console.log("BackgroundFetch restricted");
+          break;
+        case BackgroundFetch.STATUS_DENIED:
+          console.log("BackgroundFetch denied");
+          break;
+        case BackgroundFetch.STATUS_AVAILABLE:
+          console.log("BackgroundFetch is enabled");
+          break;
+      }
+    });
+
+    //setTimeout(this.createBackgroundJobs, 1000);
+
     Promise.all([GradeBook.getGradebook(), getData('gradeCardColor')]).then((values) => {
       let gradeBook = values[0]
       let gradeCardColor = values[1]
