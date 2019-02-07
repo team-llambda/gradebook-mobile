@@ -12,10 +12,11 @@ initiate = (userid, password, baseurl = CONSTANTS.baseUrl) => {
 
 getGradebook = (reportingPeriodIndex = null) => {
     return new Promise(function(resolve, reject) {
-        services.getGradebook(reportingPeriodIndex).then((gradebook) => {
-            storeData('gradebook', gradebook)
+        services.getGradebook(reportingPeriodIndex).then(async (gradebook) => {
+            await storeData('gradebook', gradebook)
             resolve(gradebook)
         }).catch((error) => {
+            services = null
             reject(error)
         })
     })

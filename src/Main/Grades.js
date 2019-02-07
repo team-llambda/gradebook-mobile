@@ -55,20 +55,20 @@ export default class Grades extends React.Component {
       startOnBoot: true,
       enableHeadless: true
     }, notificationEvent, (error) => {
-        console.log("[js] RNBackgroundFetch failed to start");
+        //console.log("[js] RNBackgroundFetch failed to start");
     });
 
     // Optional: Query the authorization status.
     BackgroundFetch.status((status) => {
       switch(status) {
         case BackgroundFetch.STATUS_RESTRICTED:
-          console.log("BackgroundFetch restricted");
+          //console.log("BackgroundFetch restricted");
           break;
         case BackgroundFetch.STATUS_DENIED:
-          console.log("BackgroundFetch denied");
+          //console.log("BackgroundFetch denied");
           break;
         case BackgroundFetch.STATUS_AVAILABLE:
-          console.log("BackgroundFetch is enabled");
+          //console.log("BackgroundFetch is enabled");
           break;
       }
     });
@@ -80,6 +80,14 @@ export default class Grades extends React.Component {
       let gradeCardColor = values[1]
       this.setState({gradeCardColor})
       this.setState({gradeData: gradeBook})
+    }).catch((err) => {
+      showMessage({
+        message: "Something Went Wrong :(",
+        description: "Logging out...",
+        type: "danger",
+        floating: true
+      });
+      setTimeout(this.props.logout, 2000); //logout after 2 seconds
     })
     // .then((responseJson) => {
     //   //parse classes data

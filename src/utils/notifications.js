@@ -6,11 +6,7 @@ import { getCredentials } from '../utils/keychain'
 
 import GradeBook from '../utils/gradebook'
 
-import CONSTANTS from '../constants'
-
 async function notificationEvent() {
-    console.log("[js] Received background-fetch event");
-    console.log('---------------------------------')
     let values = await Promise.all([getData('notifications'), getCredentials(), getData('gradebook')])
     var notifications = values[0]
     var credentials = values[1]
@@ -33,7 +29,6 @@ async function notificationEvent() {
         })
     }
     
-    await storeData('gradebook', gradeBook)
     // Required: Signal completion of your task to native code
     // If you fail to do this, the OS can terminate your app
     // or assign battery-blame for consuming too much background-time
@@ -53,15 +48,19 @@ function checkForUpdatedAssignments(oldGradebook, newGradebook) {
 
         for (var i = 0; i < newAssignments.length; i++) {
             var newA = newAssignments[i]
+            var foundAssignment = false //keep track if assignment found with same name
             for (var j = 0; j < oldAssignments.length; j++) {
                 var oldA = oldAssignments[j]
-                if (newA.measure === oldA.measure && oldA.actualScore === null && newA.actualScore !== null) {
-                    //same assignment, but grade now entered
-                    arr.push({class: classTitle, name: newA.measure})
-                    break;
+                if (newA.measure === oldA.measure) {
+                    foundAssignment = true
+                    if (oldA.actualScore === null && newA.actualScore !== null) {
+                        //same assignment, but grade now entered
+                        arr.push({class: classTitle, name: newA.measure})
+                        break;
+                    }
                 }
-
-                if (j === oldAssignments.length - 1 && newA.actualScore !== null) {
+                    
+                if (!foundAssignment && j === oldAssignments.length - 1 && newA.actualScore !== null) {
                     //reached the end and assignment is graded
                     arr.push({class: classTitle, name: newA.measure})
                 }
